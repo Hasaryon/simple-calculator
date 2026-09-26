@@ -9,14 +9,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/artemserebrennikov/buildozer:latest
+      image: python:3.8-slim
       options: --user root
 
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Dependencies
+        run: |
+          apt-get update -y
+          apt-get install -y git zip unzip openjdk-11-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip3 install --upgrade pip
+          pip3 install buildozer kivy
+
       - name: Build with Buildozer
         run: |
+          buildozer init
           buildozer -v android debug
           ls -l bin/*.apk
 
