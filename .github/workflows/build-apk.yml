@@ -8,19 +8,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/artemserebrennikov/buildozer:latest
+      options: --user root
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Build with Buildozer
-        uses: ArtemSerebrennkov/buildozer-action@v1
-        id: buildozer
-        with:
-          buildozer_version: master
-          python_version: 3.8
+        run: |
+          buildozer -v android debug
+          ls -l bin/*.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
           name: package
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: bin/*.apk
